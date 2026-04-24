@@ -1,25 +1,23 @@
 package com.example.EcommerceBackend.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-
 import java.time.LocalDateTime;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ErrorResponse {
+
     private String message;
-    private HttpStatus status;
+    private int status;
+    private String error;
     private LocalDateTime timestamp;
 
     public ErrorResponse(String message, HttpStatus status) {
         this.message = message;
-        this.status = status;
+        this.status = status.value();       // numeric (400, 404, etc.)
+        this.error = status.getReasonPhrase(); // "Bad Request", "Not Found"
         this.timestamp = LocalDateTime.now();
     }
 }

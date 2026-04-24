@@ -5,6 +5,7 @@ import com.example.EcommerceBackend.dto.product.ProductResponseDTO;
 import com.example.EcommerceBackend.entities.Product;
 import com.example.EcommerceBackend.mapStruct.ProductRequestMapper;
 import com.example.EcommerceBackend.repositories.ProductRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +20,7 @@ public class ProductService {
     }
     public ProductResponseDTO addProduct(ProductRequestDTO product){
         Product p = productRequestMapper.toEntity(product);
-//        Product p = new Product();
-//        p.setName(product.getName());
         Product savedProduct = productRepository.save(p);
-//        ProductResponseDTO res = new ProductResponseDTO();
-//        res.setName(savedProduct.getName());
-//        return res;
         return productRequestMapper.toResponse(savedProduct);
     }
     public List<ProductResponseDTO> getAllProducts(){
@@ -34,5 +30,13 @@ public class ProductService {
             return p;
         }).toList();
         return res;
+    }
+    public String deleteProduct(Long productId){
+        try{
+            productRepository.deleteById(productId);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new RuntimeException("User not found with id: " + productId);
+        }
+        return "Product deleted successfully";
     }
 }
